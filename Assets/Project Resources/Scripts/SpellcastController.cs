@@ -1,9 +1,12 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class SpellcastController : MonoBehaviour
 {
     public GameObject spellCanvas;
+
+    [SerializeField] LineRenderer lr;
 
     [SerializeField]
     [Tooltip("The reference to the action of entering spellcast mode, finalizing spell drawing and casting the spell itself")]
@@ -29,6 +32,19 @@ public class SpellcastController : MonoBehaviour
     private int spellCastState;
     private int fireSpellID; // ID for the spell the user can fire (or that they last fired if they can't currently fire a spell).
 
+    Ray ray;
+    RaycastHit hit;
+    public LayerMask target;
+
+    [SerializeField] Transform rayOrigin;
+    [SerializeField] public int markerSize = 10;
+    public Material drawMat;
+    private Color[] colors;
+    private CanvasController drawCanvas;
+    private Vector2 hitPos;
+    private Vector2 lastHitPos;
+    private bool hitLastFrame;
+
     private void Awake()
     {
         m_SpellCast.action.Enable();
@@ -36,6 +52,13 @@ public class SpellcastController : MonoBehaviour
 
         m_SpellCast.action.performed += ManageSpellCast;
         m_SpellDraw.action.performed += DrawOnCanvas;
+    }
+
+    private void Start()
+    {
+        drawCanvas = spellCanvas.GetComponent<CanvasController>();
+        colors = Enumerable.Repeat(drawMat.color, markerSize * markerSize).ToArray();
+        Debug.Log(string.Join(", ", colors));
     }
 
     private void OnDestroy()
@@ -55,6 +78,8 @@ public class SpellcastController : MonoBehaviour
         else if (spellCastState == 1)
         {
             Debug.Log("Finished drawing spell");
+            drawCanvas.texture.SetPixels32(drawCanvas.resetColorArray); // Clear canvas
+            drawCanvas.texture.Apply();
             spellCanvas.SetActive(false);
 
             // Pass drawing input into symbol recognizer script and get output, which will be the symbol
@@ -163,6 +188,89 @@ public class SpellcastController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (spellCastState == 1)
+        {
+            lr.enabled = true;
+            lr.startWidth = 0.01f;
+            lr.endWidth = 0.01f;
+            lr.SetPosition(0, rayOrigin.position);
+            ray = new Ray(rayOrigin.position, rayOrigin.forward * 5);
+            float rayLength = rayOrigin.forward.magnitude * 5;
+            if (Physics.Raycast(ray, out hit, rayLength, target))
+            {
+                //Debug.Log("Hit Canvas");
+                lr.SetPosition(1, hit.point);
+
+                if (hit.transform.CompareTag("Draw Canvas")) // Prob won't need this as raycast has a layer mask set
+                {
+                    /*
+                    if (drawCanvas == null)
+                    {
+                        drawCanvas = hit.transform.GetComponent<CanvasController>();
+                    }
+                    */
+
+                    hitPos = new Vector2(hit.textureCoord.x, hit.textureCoord.y); // textureCoords are from 0-1 (like a percentage)
+
+                    var x = (int)(hitPos.x * drawCanvas.textureSize.x - (markerSize / 2));
+                    var y = (int)(hitPos.y * drawCanvas.textureSize.y - (markerSize / 2));
+
+                    if (x < 0 || x > drawCanvas.textureSize.x || y < 0 || y > drawCanvas.textureSize.y) //If would be drawing off the canvas
+                    {
+                        //drawCanvas = null;
+                        hitLastFrame = false;
+                        return;
+                    }
+
+                    if (hitLastFrame)
+                    {
+                        drawCanvas.texture.SetPixels(x, y, markerSize, markerSize, colors);
+
+                        float dist = Vector2.Distance(lastHitPos, hitPos);
+
+                        int lerpX;
+                        int lerpY;
+
+                        // If distance between last draw positions is large enough, we interpolate by 2.5% each step
+                        // Else just draw between every 0.01 units of distance
+                        if (dist > 0.25f)
+                        {
+                            for (float f = 0f; f < 1f; f += 0.001f)
+                            {
+                                lerpX = (int)Mathf.Lerp(lastHitPos.x, x, f);
+                                lerpY = (int)Mathf.Lerp(lastHitPos.y, y, f);
+                                drawCanvas.texture.SetPixels(lerpX, lerpY, markerSize, markerSize, colors);
+                            }
+                        }
+                        else
+                        {
+                            for (float f = 0f; f < dist; f += 0.005f)
+                            {
+                                lerpX = (int)Mathf.Lerp(lastHitPos.x, x, f);
+                                lerpY = (int)Mathf.Lerp(lastHitPos.y, y, f);
+                                drawCanvas.texture.SetPixels(lerpX, lerpY, markerSize, markerSize, colors);
+                            }
+                        }
+
+                        drawCanvas.texture.Apply();
+                    }
+                    //Debug.Log("HERE!!!!");
+
+                    lastHitPos = new Vector2(x, y);
+                    hitLastFrame = true;
+                    return; 
+                }
+            }
+            else
+            {
+                //drawCanvas = null;
+                hitLastFrame = false;
+                lr.SetPosition(1, rayOrigin.position + rayOrigin.forward * 3);
+            }
+        }
+        else
+        {
+            lr.enabled = false;
+        }
     }
 }
