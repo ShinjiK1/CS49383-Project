@@ -5950,9 +5950,10 @@ GameObject:
   - component: {fileID: 3492633136730064724}
   - component: {fileID: 8466476481087321080}
   - component: {fileID: 6987537251381310519}
+  - component: {fileID: 324134594734600699}
   m_Layer: 6
   m_Name: Draw Canvas
-  m_TagString: Untagged
+  m_TagString: Draw Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6003,7 +6004,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f1cd39d292200994f8b0939d5952dfe9, type: 2}
+  - {fileID: 2100000, guid: f0e40cbc16030754ab1b9e6843029169, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6047,6 +6048,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &324134594734600699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7122554829105586828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9abb22389443894a8f988bcc13bcae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  texture: {fileID: 0}
+  mat: {fileID: 2100000, guid: f0e40cbc16030754ab1b9e6843029169, type: 2}
+  resetColorArray: []
+  textureSize: {x: 1024, y: 1024}
 --- !u!1 &7158401045433275914
 GameObject:
   m_ObjectHideFlags: 0
@@ -7332,9 +7349,9 @@ MonoBehaviour:
   target:
     serializedVersion: 2
     m_Bits: 64
-  rayOrigin: {fileID: 0}
-  markerSize: 5
-  drawMat: {fileID: 0}
+  rayOrigin: {fileID: 687189421895890831}
+  markerSize: 10
+  drawMat: {fileID: 2100000, guid: d86bb4bdc47729a4b8b5b52c515b6764, type: 2}
 --- !u!120 &6000693585123903978
 LineRenderer:
   serializedVersion: 2
@@ -7359,7 +7376,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: a17910c8d76531949aad2e41be626b73, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

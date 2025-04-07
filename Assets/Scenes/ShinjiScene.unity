@@ -351,10 +351,6 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5279370636026030349, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      propertyPath: lr
-      value: 
-      objectReference: {fileID: 5625762305475623558}
-    - target: {fileID: 5279370636026030349, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: drawMat
       value: 
       objectReference: {fileID: 2100000, guid: d86bb4bdc47729a4b8b5b52c515b6764, type: 2}
@@ -366,26 +362,10 @@ PrefabInstance:
       propertyPath: markerSize
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 5279370636026030349, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      propertyPath: m_SpellCast
-      value: 
-      objectReference: {fileID: -826414871802809138, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-    - target: {fileID: 5279370636026030349, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      propertyPath: target.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 5279370636026030349, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      propertyPath: controllerTransform
-      value: 
-      objectReference: {fileID: 1270062692}
     - target: {fileID: 6000693585123903978, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a17910c8d76531949aad2e41be626b73, type: 2}
-    - target: {fileID: 7122554829105586828, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7122554829105586828, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: m_TagString
       value: Draw Canvas
@@ -437,36 +417,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7122554829105586828, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5625762305475623560}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
---- !u!120 &5625762305475623558 stripped
-LineRenderer:
-  m_CorrespondingSourceObject: {fileID: 6000693585123903978, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-  m_PrefabInstance: {fileID: 5625762305475623557}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5625762305475623559 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7122554829105586828, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
-  m_PrefabInstance: {fileID: 5625762305475623557}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5625762305475623560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5625762305475623559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9abb22389443894a8f988bcc13bcae7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  texture: {fileID: 0}
-  mat: {fileID: 2100000, guid: f0e40cbc16030754ab1b9e6843029169, type: 2}
-  textureSize: {x: 1024, y: 1024}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

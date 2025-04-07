@@ -44,6 +44,7 @@ public class SpellcastController : MonoBehaviour
     private Vector2 hitPos;
     private Vector2 lastHitPos;
     private bool hitLastFrame;
+    private bool isDrawing;
 
     private void Awake()
     {
@@ -52,6 +53,7 @@ public class SpellcastController : MonoBehaviour
 
         m_SpellCast.action.performed += ManageSpellCast;
         m_SpellDraw.action.performed += DrawOnCanvas;
+        m_SpellDraw.action.canceled += StopDrawOnCanvas;
     }
 
     private void Start()
@@ -80,6 +82,7 @@ public class SpellcastController : MonoBehaviour
             Debug.Log("Finished drawing spell");
             drawCanvas.texture.SetPixels32(drawCanvas.resetColorArray); // Clear canvas
             drawCanvas.texture.Apply();
+            isDrawing = false;
             spellCanvas.SetActive(false);
 
             // Pass drawing input into symbol recognizer script and get output, which will be the symbol
@@ -123,6 +126,16 @@ public class SpellcastController : MonoBehaviour
         if (spellCastState == 1)
         {
             Debug.Log("Drawing on canvas");
+            isDrawing = true;
+        }
+    }
+
+    private void StopDrawOnCanvas(InputAction.CallbackContext context)
+    {
+        if (spellCastState == 1)
+        {
+            Debug.Log("Stopped drawing on canvas");
+            isDrawing = false;
         }
     }
 
@@ -201,7 +214,7 @@ public class SpellcastController : MonoBehaviour
                 //Debug.Log("Hit Canvas");
                 lr.SetPosition(1, hit.point);
 
-                if (hit.transform.CompareTag("Draw Canvas")) // Prob won't need this as raycast has a layer mask set
+                if (isDrawing)
                 {
                     /*
                     if (drawCanvas == null)
@@ -259,6 +272,10 @@ public class SpellcastController : MonoBehaviour
                     lastHitPos = new Vector2(x, y);
                     hitLastFrame = true;
                     return; 
+                }
+                else
+                {
+                    hitLastFrame = false;
                 }
             }
             else
