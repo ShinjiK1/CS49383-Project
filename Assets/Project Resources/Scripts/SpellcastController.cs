@@ -16,15 +16,9 @@ public class SpellcastController : MonoBehaviour
     [Tooltip("The reference to the action of toggling on/off the marker when in draw mode")]
     public InputActionReference m_SpellDraw;
 
-    // The same button is used for SpellCastStart, SpellCastFinish and SpellCastFire and only one of them is enabled at any time.
-    // SpellCastStart is enabled at the start and when the user is neither in state of drawing a spell, or being able to fire one.
-    // Pressing it opens the canvas and allows the user to start drawing their spell.
-    // SpellCastFinish is used enabled when the user has pressed SpellCastStart and is in the state where they can draw a spell.
-    // Pressing it finalizes the drawing the user made and compares it to a list of symbols to determine if they can cast a
-    // spell/what spell they can cast. If successful, the user loads the spell and enters a state that they can fire one.
-    // If the drawing is unsuccessful and no spell symbol is recognized, the user returns to the starting state and SpellCastStart is enabled again.
-    // SpellCastFire is enabled when the user can fire a spell and pressing it casts the spell. After casting the spell, or
-    // casting it a certain number of time, the user goes back to the starting state and SpellCastStart is enabled again.
+    [SerializeField]
+    [Tooltip("The reference to the action of casating the spell itself once it is ready to be fired")]
+    public InputActionReference m_SpellFire;
 
     // startState = 0
     // drawingState = 1
@@ -45,6 +39,12 @@ public class SpellcastController : MonoBehaviour
     private Vector2 lastHitPos;
     private bool hitLastFrame;
     private bool isDrawing;
+    public GameObject spellIndicator; // Indicator for when the user can cast a spell
+
+    // Move/change these last 3 fields once we start to have more than 1 spell type.
+    public GameObject projectileObj;
+    public Transform spawn;
+    public float force = 10f;
 
     private void Awake()
     {
@@ -54,13 +54,14 @@ public class SpellcastController : MonoBehaviour
         m_SpellCast.action.performed += ManageSpellCast;
         m_SpellDraw.action.performed += DrawOnCanvas;
         m_SpellDraw.action.canceled += StopDrawOnCanvas;
+
+        m_SpellFire.action.performed += Shoot;
     }
 
     private void Start()
     {
         drawCanvas = spellCanvas.GetComponent<CanvasController>();
         colors = Enumerable.Repeat(drawMat.color, markerSize * markerSize).ToArray();
-        Debug.Log(string.Join(", ", colors));
     }
 
     private void OnDestroy()
@@ -94,6 +95,7 @@ public class SpellcastController : MonoBehaviour
             if (accuracyScore > 0.6) // Whatever threshhold for a successful drawing
             {
                 spellCastState = 2;
+                spellIndicator.SetActive(true);
                 // Load the spell that the user can cast
             }
             else // Drawing wasn't accurate enough/matched to a spell symbol
@@ -101,25 +103,6 @@ public class SpellcastController : MonoBehaviour
                 spellCastState = 0;
             }
         }
-        else if (spellCastState == 2)
-        {
-            Debug.Log("Firing spell");
-            // Fire spell. Also probably want a timer so they can't fire a bunch of times at once (if the spell has multiple charges)
-
-            // If can't fire spell anymore
-            spellCastState = 0;
-        }
-        /*
-        Debug.Log("Starting spell draw");
-        m_SpellCastStart.action.Disable();
-        m_SpellCastStart.action.performed -= StartSpellCast;
-        m_SpellCastFinish.action.Enable();
-        m_SpellDraw.action.Enable();
-
-        spellCanvas.SetActive(true);
-        m_SpellDraw.action.performed += DrawOnCanvas;
-        m_SpellCastFinish.action.performed += CheckSpellCorrect;
-        */
     }
     private void DrawOnCanvas(InputAction.CallbackContext context)
     {
@@ -139,64 +122,34 @@ public class SpellcastController : MonoBehaviour
         }
     }
 
-    /*
-    private void StartSpellCast(InputAction.CallbackContext context)
+    private void Shoot(InputAction.CallbackContext context)
     {
-        Debug.Log("Starting spell draw");
-        m_SpellCastStart.action.Disable();
-        m_SpellCastStart.action.performed -= StartSpellCast;
-        m_SpellCastFinish.action.Enable();
-        m_SpellDraw.action.Enable();
-
-        spellCanvas.SetActive(true);
-        m_SpellDraw.action.performed += DrawOnCanvas;
-        m_SpellCastFinish.action.performed += CheckSpellCorrect;
-    }
-
-    private void CheckSpellCorrect(InputAction.CallbackContext context)
-    {
-        Debug.Log("Finished drawing spell");
-        m_SpellCastFinish.action.Disable();
-        m_SpellDraw.action.Disable();
-        m_SpellCastFinish.action.performed -= CheckSpellCorrect;
-        m_SpellDraw.action.performed -= DrawOnCanvas;
-
-        spellCanvas.SetActive(false);
-        // Convert canvas drawing into some input form that we can send to compare to a symbol
-        // recognizer with our list of spell symbols.
-
-
-        // Pass input into symbol recognizer script and get output, which will be the symbol
-        // the script matched the drawing to and an accuracy score, or it will be a ? (didn't match
-        // to anything).
-        fireSpellID = 0;
-        int accuracyScore = 1;
-
-        if (accuracyScore > 0.6) // Whatever threshhold
+        if (spellCastState == 2)
         {
-            m_SpellCastFire.action.Enable();
-            // Load the spell that the user can cast
-            m_SpellCastFire.action.performed += FireSpell;
-        }
-        else
-        {
-            m_SpellCastStart.action.Enable();
-            m_SpellCastStart.action.performed += StartSpellCast;
+            Debug.Log("Firing spell");
+            // Fire spell. Also probably want a timer so they can't fire a bunch of times at once (if the spell has multiple charges)
+
+            /*
+            Change this part once we start to have more than one spell type that the player can cast.
+            Instead of storing a projectile and rigidbody field in this class, probably just have a list
+            of spellIDs that correspond to casting each spell and pass the id of the spell we are currently
+            casting in this function or by setting fireSpellID to that value. Then we would want to
+            just instantiate a prefab for the spell we are casting and run the logic for that spell inside of
+            its own script so that we don't deal with all that code here. Alternatively we could also just make
+            a separate script file for managing spell casts and do all that code over there to not bloat this file.
+            */
+            GameObject projectile = Instantiate(projectileObj, spawn.position, spawn.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = spawn.forward * force;
+            }
+
+            // If can't fire spell anymore
+            spellCastState = 0;
+            spellIndicator.SetActive(false);
         }
     }
-
-    private void FireSpell(InputAction.CallbackContext context)
-    {
-        Debug.Log("Firing spell");
-        // Fire spell. Also probably want a timer so they can't fire a bunch of times at once (if the spell has multiple charges)
-
-        // If can't fire spell anymore
-        m_SpellCastFire.action.Disable();
-        m_SpellCastFire.action.performed -= FireSpell;
-        m_SpellCastStart.action.Enable();
-        m_SpellCastStart.action.performed += StartSpellCast;
-    }
-    */
 
     // Update is called once per frame
     void Update()
