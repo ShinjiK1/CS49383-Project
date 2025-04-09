@@ -5,12 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 55daccc09a3b69647bbab145b54a3ab3
   - enabled: 1
     path: Assets/Scenes/ShinjiScene.unity
     guid: 214a73d7b2b853e4597fa1aa423ae94c
+  - enabled: 1
+    path: Assets/Scenes/JerichoSceneOld.unity
+    guid: d07779af37a8ae64d981c3420ea4f004
+  - enabled: 1
+    path: Assets/Scenes/Battle3.unity
+    guid: 1041e990c76787d4cb683125314f9dcc
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: af1d58b9d18478e4bbb7bcba0b5fa8c9
