@@ -2,17 +2,23 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ShootProjectile : MonoBehaviour {
-    public GameObject projectileObj;
-    public Transform spawn;
-    public float force = 10f;
-    public float gravityScale = 1f;
-    public float lifetime = 5f;
-    public InputActionProperty shootAction;
+    public GameObject projectileObj; // projectile to be spawned
+    public Transform spawn; // spawnpoint of projectile
+    public float force = 10f; // force of object
+    public float gravityScale = 1f; // used to control how much object is affected by gravity
+    public float lifetime = 5f; // default time before object despawns
+    public float cooldownTime = 0.5f; // cooldown between shots
+    private float lastShotTime = 0f; // tracks time from last shot
+    public InputActionProperty shootAction; // action that triggers shoot
+    public AudioSource shootAudioSource; // audio source for shooting
+    public AudioClip shootSound; // shooting sound effect
+    public AudioClip collisionSound; // collision sound effect
 
     // Update is called once per frame
     void Update() {
-        if (shootAction.action.WasPressedThisFrame()) {
+        if (shootAction.action.WasPressedThisFrame() && Time.time >= lastShotTime + cooldownTime) {
             Shoot();
+            lastShotTime = Time.time;
         }
     }
     void Shoot() {
@@ -23,8 +29,14 @@ public class ShootProjectile : MonoBehaviour {
             rb.useGravity = false;
             projectile.AddComponent<CustomGravity>().gravityScale = gravityScale;
         }
+
+        if (shootAudioSource != null && shootSound != null) {
+            shootAudioSource.PlayOneShot(shootSound);
+        }
+
         Destroy(projectile, lifetime);
-        projectile.AddComponent<ProjectileCollision>();
+        ProjectileCollision projectileCollision = projectile.AddComponent<ProjectileCollision>();
+        projectileCollision.collisionSound = collisionSound;
     }
 }
 
@@ -44,8 +56,14 @@ public class CustomGravity : MonoBehaviour {
     }
 }
 
-public class ProjectileCollision : MonoBehaviour {
+public class ProjectileCollision : MonoBehaviour
+{
+    public AudioClip collisionSound;
+
     void OnCollisionEnter(Collision collision) {
+        if (collisionSound != null) {
+            AudioSource.PlayClipAtPoint(collisionSound, transform.position);
+        }
         Destroy(gameObject);
     }
 }
