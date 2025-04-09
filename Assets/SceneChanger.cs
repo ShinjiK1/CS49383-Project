@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class SceneChanger : MonoBehaviour
 {
     public InputActionReference changeSceneButton;
-    private int numScenes = 2;
+    private int numScenes = 4;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
