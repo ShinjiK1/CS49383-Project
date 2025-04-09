@@ -24,8 +24,12 @@ MonoBehaviour:
     m_path: Assets/Scenes/MainMenu.unity
   - m_enabled: 1
     m_path: Assets/Scenes/TutorialScene.unity
-  - m_enabled: 0
+  - m_enabled: 1
     m_path: Assets/Scenes/ShinjiScene.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/JerichoScene.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Battle3.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []
