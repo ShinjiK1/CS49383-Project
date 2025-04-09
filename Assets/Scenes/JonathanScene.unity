@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 53016525}
   - component: {fileID: 53016524}
   - component: {fileID: 53016526}
+  - component: {fileID: 53016527}
   m_Layer: 0
   m_Name: XR Origin (VR)
   m_TagString: Untagged
@@ -288,6 +289,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &53016527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53016519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef516dddf6416d84ba14b253c7312c1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  changeSceneButton: {fileID: -589091432928892588, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!1001 &160567510
 PrefabInstance:
   m_ObjectHideFlags: 0
