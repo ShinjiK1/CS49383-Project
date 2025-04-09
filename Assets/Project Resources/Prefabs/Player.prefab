@@ -7599,6 +7599,8 @@ MonoBehaviour:
   projectileObj: {fileID: 1535488979435898290, guid: 819e4855cbb63b84f97602d8474d9f04, type: 3}
   spawn: {fileID: 5638389569842229778}
   force: 10
+  gravityScale: 1
+  lifetime: 5
   shootAction:
     m_UseReference: 1
     m_Action:
