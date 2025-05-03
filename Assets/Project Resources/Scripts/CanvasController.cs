@@ -7,7 +7,7 @@ public class CanvasController : MonoBehaviour
     public Texture2D texture;
     [SerializeField] Material mat;
     public Color32[] resetColorArray;
-    public Vector2 textureSize = new Vector2(2048, 2048);
+    public Vector2 textureSize = new Vector2(512, 512);
     void Start()
     {
         var r = GetComponent<Renderer>();

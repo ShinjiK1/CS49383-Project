@@ -1,10 +1,16 @@
+using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using PDollarGestureRecognizer;
+using QDollarGestureRecognizer;
 
 public class SpellcastController : MonoBehaviour
 {
     public GameObject spellCanvas;
+    public Transform mainCamera;
 
     [SerializeField] LineRenderer lr;
 
@@ -46,6 +52,15 @@ public class SpellcastController : MonoBehaviour
     public Transform spawn;
     public float force = 10f;
 
+    // Stuff for $Q recognizer integration with our drawings
+    private int strokeIndex = 0;
+    private List<Gesture> trainingSet = new List<Gesture>();
+    private List<Point> points = new List<Point>();
+
+    public bool useQRecognizer;
+    public bool writeGesture;
+    public string gestureName;
+
     private void Awake()
     {
         m_SpellCast.action.Enable();
@@ -62,6 +77,16 @@ public class SpellcastController : MonoBehaviour
     {
         drawCanvas = spellCanvas.GetComponent<CanvasController>();
         colors = Enumerable.Repeat(drawMat.color, markerSize * markerSize).ToArray();
+
+        //Load pre-made gestures
+        TextAsset[] gesturesXml = Resources.LoadAll<TextAsset>("GameGestures/");
+        foreach (TextAsset gestureXml in gesturesXml)
+            trainingSet.Add(GestureIO.ReadGestureFromXML(gestureXml.text));
+
+        //Load user custom gestures
+        string[] filePaths = Directory.GetFiles(Application.persistentDataPath, "*.xml");
+        foreach (string filePath in filePaths)
+            trainingSet.Add(GestureIO.ReadGestureFromFile(filePath));
     }
 
     private void OnDestroy()
@@ -76,6 +101,10 @@ public class SpellcastController : MonoBehaviour
         {
             Debug.Log("Starting spell draw");
             spellCanvas.SetActive(true);
+            spellCanvas.transform.position = mainCamera.position + mainCamera.forward * 1.5f;
+            Vector3 cameraRot = mainCamera.localEulerAngles;
+            Debug.Log(cameraRot.x + "," + cameraRot.y + "," + cameraRot.z);
+            spellCanvas.transform.rotation = Quaternion.Euler(0, cameraRot.y + 90, cameraRot.z - 90);
             spellCastState = 1;
         }
         else if (spellCastState == 1)
@@ -89,8 +118,38 @@ public class SpellcastController : MonoBehaviour
             // Pass drawing input into symbol recognizer script and get output, which will be the symbol
             // the script matched the drawing to and an accuracy score, or it will be a ? (didn't match
             // to anything).
+            if (points.Count > 0)
+            {
+                if (writeGesture)
+                {
+                    string fileName = String.Format("{0}/{1}-{2}.xml", Application.persistentDataPath, gestureName, DateTime.Now.ToFileTime());
+                    GestureIO.WriteGesture(points.ToArray(), gestureName, fileName);
+                }
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Debug.Log(points[i].X + "," + points[i].Y);
+                }
+
+                Gesture candidate = new Gesture(points.ToArray());
+
+                Result gestureResult;
+                if (useQRecognizer)
+                {
+                    gestureResult = QPointCloudRecognizer.Classify(candidate, trainingSet.ToArray());
+                }
+                else
+                {
+                    gestureResult = PointCloudRecognizer.Classify(candidate, trainingSet.ToArray());
+                }
+
+                string message = gestureResult.GestureClass + " " + gestureResult.Score;
+                Debug.Log(message);
+            }
+
             fireSpellID = 0;
             int accuracyScore = 1;
+
+            strokeIndex = 0;
 
             if (accuracyScore > 0.6) // Whatever threshhold for a successful drawing
             {
@@ -119,6 +178,8 @@ public class SpellcastController : MonoBehaviour
         {
             Debug.Log("Stopped drawing on canvas");
             isDrawing = false;
+
+            strokeIndex++;
         }
     }
 
@@ -217,6 +278,14 @@ public class SpellcastController : MonoBehaviour
                                 drawCanvas.texture.SetPixels(lerpX, lerpY, markerSize, markerSize, colors);
                             }
                         }
+                        int pointX = (int)(hitPos.x * drawCanvas.textureSize.x);
+                        int pointY = (int)((1-hitPos.y) * drawCanvas.textureSize.y); // y starts at the top in $Q recognizer (lower y values are closer to the top)
+                        /*
+                        // We need to rotate our shape by 90 degrees because the canvas is rotated by 90 degrees in the y axis?
+                        pointX = pointY;
+                        pointY = -1 * pointX;
+                        */
+                        points.Add(new Point(pointX, pointY, strokeIndex));
 
                         drawCanvas.texture.Apply();
                     }
