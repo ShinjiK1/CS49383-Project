@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using TMPro;
 using UnityEngine.InputSystem;
 using PDollarGestureRecognizer;
 using QDollarGestureRecognizer;
@@ -46,6 +47,9 @@ public class SpellcastController : MonoBehaviour
     private bool hitLastFrame;
     private bool isDrawing;
     public GameObject spellIndicator; // Indicator for when the user can cast a spell
+    public GameObject spellDisplay;
+    public GameObject spellDisplayTMP;
+    private TMP_Text spellDisplayText;
 
     // Move/change these last 3 fields once we start to have more than 1 spell type.
     public GameObject projectileObj;
@@ -59,7 +63,10 @@ public class SpellcastController : MonoBehaviour
 
     public bool useQRecognizer;
     public bool writeGesture;
-    public string gestureName;
+    public string writeGestureName;
+
+    private string[] spellNames;
+    private string gestureName;
 
     private void Awake()
     {
@@ -75,8 +82,12 @@ public class SpellcastController : MonoBehaviour
 
     private void Start()
     {
+        spellNames = new string[] { "Arrow", "Shield", "MagicCircle", "Triangle", "Thunderbolt" };
+
         drawCanvas = spellCanvas.GetComponent<CanvasController>();
         colors = Enumerable.Repeat(drawMat.color, markerSize * markerSize).ToArray();
+
+        spellDisplayText = spellDisplayTMP.GetComponent<TMP_Text>();
 
         //Load pre-made gestures
         TextAsset[] gesturesXml = Resources.LoadAll<TextAsset>("GameGestures/");
@@ -122,13 +133,15 @@ public class SpellcastController : MonoBehaviour
             {
                 if (writeGesture)
                 {
-                    string fileName = String.Format("{0}/{1}-{2}.xml", Application.persistentDataPath, gestureName, DateTime.Now.ToFileTime());
-                    GestureIO.WriteGesture(points.ToArray(), gestureName, fileName);
+                    string fileName = String.Format("{0}/{1}-{2}.xml", Application.persistentDataPath, writeGestureName, DateTime.Now.ToFileTime());
+                    GestureIO.WriteGesture(points.ToArray(), writeGestureName, fileName);
                 }
+                string toPrint = "";
                 for (int i = 0; i < points.Count; i++)
                 {
-                    Debug.Log(points[i].X + "," + points[i].Y);
+                    toPrint += "(" + points[i].X + "," + points[i].Y + ")\n";
                 }
+                Debug.Log(toPrint);
 
                 Gesture candidate = new Gesture(points.ToArray());
 
@@ -141,20 +154,33 @@ public class SpellcastController : MonoBehaviour
                 {
                     gestureResult = PointCloudRecognizer.Classify(candidate, trainingSet.ToArray());
                 }
-
+                gestureName = gestureResult.GestureClass;
+                spellDisplayText.text = gestureName;
                 string message = gestureResult.GestureClass + " " + gestureResult.Score;
                 Debug.Log(message);
             }
+            // fireSpellID = -1 if gesture drawn isn't a valid spell, else represents whatever spell the user drew and can now cast.
+            if (gestureName != "")
+            {
+                fireSpellID = Array.IndexOf(spellNames, gestureName);
+            }
+            else
+            {
+                fireSpellID = -1;
+            }
 
             fireSpellID = 0;
-            int accuracyScore = 1;
+            //int accuracyScore = 1; // Don't know how to calculate a good accuracy score for this, so just succeeding if a valid spell is recognized.
 
             strokeIndex = 0;
+            points.Clear();
 
-            if (accuracyScore > 0.6) // Whatever threshhold for a successful drawing
+            gestureName = "";
+            if (fireSpellID > -1)
             {
                 spellCastState = 2;
                 spellIndicator.SetActive(true);
+                spellDisplay.SetActive(true);
                 // Load the spell that the user can cast
             }
             else // Drawing wasn't accurate enough/matched to a spell symbol
@@ -208,7 +234,10 @@ public class SpellcastController : MonoBehaviour
 
             // If can't fire spell anymore
             spellCastState = 0;
+            fireSpellID = -1;
             spellIndicator.SetActive(false);
+            spellDisplay.SetActive(false);
+            spellDisplayText.text = "";
         }
     }
 
