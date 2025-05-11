@@ -129,7 +129,7 @@ public class SpellcastController : MonoBehaviour
             // Pass drawing input into symbol recognizer script and get output, which will be the symbol
             // the script matched the drawing to and an accuracy score, or it will be a ? (didn't match
             // to anything).
-            if (points.Count > 0)
+            if (points.Count > 1)
             {
                 if (writeGesture)
                 {
@@ -169,7 +169,6 @@ public class SpellcastController : MonoBehaviour
                 fireSpellID = -1;
             }
 
-            fireSpellID = 0;
             //int accuracyScore = 1; // Don't know how to calculate a good accuracy score for this, so just succeeding if a valid spell is recognized.
 
             strokeIndex = 0;
