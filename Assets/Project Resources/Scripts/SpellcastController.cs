@@ -115,7 +115,7 @@ public class SpellcastController : MonoBehaviour
             spellCanvas.SetActive(true);
             spellCanvas.transform.position = mainCamera.position + new Vector3(mainCamera.forward.x, 0, mainCamera.forward.z).normalized * 1.5f;
             Vector3 cameraRot = mainCamera.localEulerAngles;
-            Debug.Log(cameraRot.x + "," + cameraRot.y + "," + cameraRot.z);
+            //Debug.Log(cameraRot.x + "," + cameraRot.y + "," + cameraRot.z);
             spellCanvas.transform.rotation = Quaternion.Euler(0, cameraRot.y + 90, cameraRot.z - 90);
             spellCastState = 1;
         }
@@ -142,7 +142,7 @@ public class SpellcastController : MonoBehaviour
                 {
                     toPrint += "(" + points[i].X + "," + points[i].Y + ")\n";
                 }
-                Debug.Log(toPrint);
+                //Debug.Log(toPrint);
 
                 Gesture candidate = new Gesture(points.ToArray());
 
@@ -243,9 +243,9 @@ public class SpellcastController : MonoBehaviour
         {
             Vector3 forwardVectorTowardsCamera = (mainCamera.position - spellCanvas.transform.position);
             Vector3 normalizedForwardVector = forwardVectorTowardsCamera.normalized;
-            Debug.Log("vector to camera " + forwardVectorTowardsCamera);
+            //Debug.Log("vector to camera " + forwardVectorTowardsCamera);
             float dotProductResult = Vector3.Dot(mainCamera.forward, normalizedForwardVector);
-            Debug.Log("dot product " + dotProductResult);
+            //Debug.Log("dot product " + dotProductResult);
             // Greater than ~105 degree angle between main camera and the spell canvas (and some distance between them), so we teleport the canvas in front of the camera
             if (dotProductResult > 0.25f && forwardVectorTowardsCamera.magnitude > 1.5f)
             {
