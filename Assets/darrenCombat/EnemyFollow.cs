@@ -25,11 +25,29 @@ public class EnemyFollow : MonoBehaviour
     {
         bulletTime -= Time.deltaTime;
         if (bulletTime > 0) return;
+
         bulletTime = timer;
+
+        // Instantiate the bullet at the spawn point
         GameObject bulletObj = Instantiate(enemyBullet, spawnPoint.transform.position, spawnPoint.transform.rotation) as GameObject;
-        Rigidbody bulletRig = bulletObj.GetComponent<Rigidbody>();
-        bulletRig.AddForce(bulletRig.transform.forward * enemySpeed);
-        Destroy(bulletObj, 3f);
+
+        // Null check: Ensure the bullet was successfully instantiated
+        if (bulletObj != null)
+        {
+            // Get the Rigidbody component of the bullet
+            Rigidbody bulletRig = bulletObj.GetComponent<Rigidbody>();
+
+            // Apply force to shoot the bullet forward
+            bulletRig.AddForce(bulletRig.transform.forward * enemySpeed, ForceMode.Impulse);
+
+            // Optionally destroy the bullet after 3 seconds
+            Destroy(bulletObj, 3f);
+        }
+        else
+        {
+            Debug.LogWarning("Bullet instantiation failed or bulletPrefab is not assigned.");
+        }
     }
+
 
 }
