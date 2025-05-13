@@ -14,7 +14,7 @@ public class ShootProjectile : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (shootAction.action.WasPressedThisFrame() && Time.time >= lastShotTime + cooldownTime) {
-            projectileSpawner.SpawnProjectile(spawn.position, spawn.rotation);
+            projectileSpawner.SpawnProjectile(spawn.position, spawn.rotation, 0);
             if (shootAudioSource != null && shootSound != null) {
                 shootAudioSource.PlayOneShot(shootSound);
             }

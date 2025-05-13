@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 public class ProjectileSpawner : MonoBehaviour {
     public List<SpellData> spells;
-    public int spellID = 0;
 
-    public void SpawnProjectile(Vector3 position, Quaternion rotation) {
+    public void SpawnProjectile(Vector3 position, Quaternion rotation, int spellID) {
         if(spellID < 0 || spellID >= spells.Count) {
             Debug.LogWarning($"Invalid spellID: {spellID}");
             return;

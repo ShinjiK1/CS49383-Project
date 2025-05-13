@@ -52,7 +52,8 @@ public class SpellcastController : MonoBehaviour
     private TMP_Text spellDisplayText;
 
     // Move/change these last 3 fields once we start to have more than 1 spell type.
-    public GameObject projectileObj;
+    public ProjectileSpawner projectileSpawner;
+    //public GameObject projectileObj;
     public Transform spawn;
     public float force = 10f;
 
@@ -156,8 +157,8 @@ public class SpellcastController : MonoBehaviour
                 }
                 gestureName = gestureResult.GestureClass;
                 spellDisplayText.text = gestureName;
-                string message = gestureResult.GestureClass + " " + gestureResult.Score;
-                Debug.Log(message);
+                //string message = gestureResult.GestureClass + " " + gestureResult.Score;
+                Debug.Log(gestureName);
             }
             // fireSpellID = -1 if gesture drawn isn't a valid spell, else represents whatever spell the user drew and can now cast.
             if (gestureName != "")
@@ -212,7 +213,7 @@ public class SpellcastController : MonoBehaviour
     {
         if (spellCastState == 2)
         {
-            Debug.Log("Firing spell");
+            Debug.Log("Firing spell, " + fireSpellID);
             // Fire spell. Also probably want a timer so they can't fire a bunch of times at once (if the spell has multiple charges)
 
             /*
@@ -224,12 +225,7 @@ public class SpellcastController : MonoBehaviour
             its own script so that we don't deal with all that code here. Alternatively we could also just make
             a separate script file for managing spell casts and do all that code over there to not bloat this file.
             */
-            GameObject projectile = Instantiate(projectileObj, spawn.position, spawn.rotation);
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = spawn.forward * force;
-            }
+            projectileSpawner.SpawnProjectile(spawn.position, spawn.rotation, fireSpellID);
 
             // If can't fire spell anymore
             spellCastState = 0;
