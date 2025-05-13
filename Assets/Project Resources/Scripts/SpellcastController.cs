@@ -113,7 +113,7 @@ public class SpellcastController : MonoBehaviour
         {
             Debug.Log("Starting spell draw");
             spellCanvas.SetActive(true);
-            spellCanvas.transform.position = mainCamera.position + mainCamera.forward * 1.5f;
+            spellCanvas.transform.position = mainCamera.position + new Vector3(mainCamera.forward.x, 0, mainCamera.forward.z).normalized * 1.5f;
             Vector3 cameraRot = mainCamera.localEulerAngles;
             Debug.Log(cameraRot.x + "," + cameraRot.y + "," + cameraRot.z);
             spellCanvas.transform.rotation = Quaternion.Euler(0, cameraRot.y + 90, cameraRot.z - 90);
@@ -241,6 +241,18 @@ public class SpellcastController : MonoBehaviour
     {
         if (spellCastState == 1)
         {
+            Vector3 forwardVectorTowardsCamera = (mainCamera.position - spellCanvas.transform.position);
+            Vector3 normalizedForwardVector = forwardVectorTowardsCamera.normalized;
+            Debug.Log("vector to camera " + forwardVectorTowardsCamera);
+            float dotProductResult = Vector3.Dot(mainCamera.forward, normalizedForwardVector);
+            Debug.Log("dot product " + dotProductResult);
+            // Greater than ~105 degree angle between main camera and the spell canvas (and some distance between them), so we teleport the canvas in front of the camera
+            if (dotProductResult > 0.25f && forwardVectorTowardsCamera.magnitude > 1.5f)
+            {
+                spellCanvas.transform.position = mainCamera.position + new Vector3(mainCamera.forward.x, 0, mainCamera.forward.z).normalized * 1.5f;
+                Vector3 cameraRot = mainCamera.localEulerAngles;
+                spellCanvas.transform.rotation = Quaternion.Euler(0, cameraRot.y + 90, cameraRot.z - 90);
+            }
             lr.enabled = true;
             lr.startWidth = 0.01f;
             lr.endWidth = 0.01f;
