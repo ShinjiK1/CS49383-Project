@@ -2202,21 +2202,73 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[0].force
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[1].force
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[2].force
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[4].force
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[1].lifetime
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: spells.Array.data[3].lifetime
-      value: 3
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[0].gravityScale
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[2].gravityScale
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[0].collisionSound
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[1].collisionSound
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: spells.Array.data[2].collisionSound
       value: 
-      objectReference: {fileID: 8300000, guid: 16fba6d30ed741d4a9fdd6e79ee2f3ac, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: spells.Array.data[3].collisionSound
       value: 
-      objectReference: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
       propertyPath: spells.Array.data[4].collisionSound
       value: 
-      objectReference: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[0].projectilePrefab
+      value: 
+      objectReference: {fileID: 2076633107173314441, guid: 819e4855cbb63b84f97602d8474d9f04, type: 3}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[1].projectilePrefab
+      value: 
+      objectReference: {fileID: 6213749562987116352, guid: 933857ce4f6a0db409d518d6fb166be7, type: 3}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[2].projectilePrefab
+      value: 
+      objectReference: {fileID: 8157309708554612099, guid: 132edc996e2924c4a9745aa2971334ba, type: 3}
+    - target: {fileID: 8820766051069552284, guid: fd9ce9aa49b1caf4e85a64147d157a53, type: 3}
+      propertyPath: spells.Array.data[3].projectilePrefab
+      value: 
+      objectReference: {fileID: 1260670704405461136, guid: 34d4c79e15954954c96d9a315187cd4f, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
